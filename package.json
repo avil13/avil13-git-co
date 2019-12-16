@@ -1,8 +1,9 @@
 {
-  "name": "@avil13/co",
+  "name": "avil13-co",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
+  "public": true,
   "bin": {
     "co": "./bin/co"
   },
