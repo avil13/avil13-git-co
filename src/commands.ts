@@ -1,4 +1,5 @@
 const child_process = require('child_process');
+const clc = require('./color');
 
 function exec(command) {
   return new Promise((resolve, reject) =>
@@ -31,4 +32,18 @@ function parseBranches(stdout) {
 
 function cleanBranchName(name) {
   return name.replace(/^\*/, '').trim();
+}
+
+/**
+ * checkout branch
+ */
+export function checkoutBranch(branchName: string) {
+  if (!branchName) {
+    throw new Error('No branch...');
+  }
+
+  console.log(' ', clc.green('git checkout', branchName));
+  const command = `git checkout ${branchName}`;
+
+  return exec(command);
 }

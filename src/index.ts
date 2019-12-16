@@ -1,12 +1,12 @@
-import { getBranches } from './commands';
+import { getBranches, checkoutBranch } from './commands';
 import { ask } from './ask';
 
 const run = async () => {
   const branches = await getBranches();
 
-  const answer = ask('Select branch', branches);
+  const branch = await ask('Select branch', branches);
 
-  console.log('=>', answer);
+  await checkoutBranch(branch)
 };
 
 try {
