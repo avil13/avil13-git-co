@@ -26,7 +26,7 @@ export function getBranches(): Promise<string[]> {
 function parseBranches(stdout) {
   return stdout
     .split('\n')
-    .map(cleanBranchName)
+    // .map(cleanBranchName)
     .filter(Boolean);
 }
 

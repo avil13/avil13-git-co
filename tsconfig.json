@@ -3,7 +3,7 @@
     "target": "es5",
     "module": "CommonJS",
     "strict": true,
-    "jsx": "preserve",
+    "declaration": true,
     "importHelpers": false,
     "moduleResolution": "node",
     "experimentalDecorators": true,
@@ -11,7 +11,6 @@
     "allowSyntheticDefaultImports": false,
     "sourceMap": false,
     "noImplicitAny": false,
-    "downlevelIteration": true,
     "baseUrl": ".",
     "outDir": "dist",
     "types": [

@@ -4,9 +4,9 @@ import { ask } from './ask';
 const run = async () => {
   const branches = await getBranches();
 
-  const branch = await ask('Select branch', branches);
+  const { branch } = await ask('Select branch', branches);
 
-  await checkoutBranch(branch)
+  await checkoutBranch(branch);
 };
 
 try {

@@ -1,14 +1,27 @@
-const { AutoComplete } = require('enquirer');
+const inquirer = require('inquirer');
+
+inquirer.registerPrompt(
+  'autocomplete',
+  require('inquirer-autocomplete-prompt')
+);
+
+const specSymbols = {
+  _saveCursor: '\x1b7',
+  _restoreCursor: '\x1b8',
+  _clear: '\x1b[H\x1b[2J',
+};
 
 export const ask = async (message: string, choices: string[]) => {
-  const limit = choices.length > 8 ? 8 : choices.length;
-
-  const prompt = new AutoComplete({
+  const prompt = inquirer.prompt({
+    type: 'autocomplete',
     name: 'branch',
     message,
-    limit,
-    choices,
+    source(answersSoFar, input = '') {
+      const list = choices.filter(str => str.indexOf(input) > -1);
+
+      return Promise.resolve(list);
+    }
   });
 
-  return await prompt.run();
+  return prompt;
 };
