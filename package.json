@@ -1,6 +1,6 @@
 {
   "name": "avil13-co",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "",
   "main": "dist/index.js",
   "public": true,
@@ -10,7 +10,8 @@
   "files": [
     "dist",
     "bin",
-    "src"
+    "src",
+    "assets"
   ],
   "scripts": {
     "prepublish": "npm run build",
