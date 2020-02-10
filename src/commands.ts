@@ -1,7 +1,7 @@
 const child_process = require('child_process');
 const clc = require('./color');
 
-function exec(command) {
+function exec(command): Promise<string> {
   return new Promise((resolve, reject) =>
     child_process.exec(command, (err, stdout) =>
       err ? reject(err) : resolve(stdout)
@@ -46,13 +46,22 @@ function onlyUnique(value, index, self) {
 /**
  * checkout branch
  */
-export function checkoutBranch(branchName: string) {
+export async function checkoutBranch(branchName: string): Promise<string> {
   if (!branchName) {
     throw new Error('No branch...');
   }
 
-  console.log(' ', clc.green('git checkout', branchName));
-  const command = `git checkout ${branchName}`;
+  const stdoutStrings: string[] = [];
+  const checkoutCommand = `git checkout ${branchName}`;
+  const currentBranchName = `git rev-parse --abbrev-ref HEAD`;
 
-  return exec(command);
+  stdoutStrings.push(' ' + clc.green('git checkout', branchName) + '\n');
+
+  const checkoutCommandResult = await exec(checkoutCommand);
+  stdoutStrings.push(checkoutCommandResult);
+
+  const currentBranchNameResult = await exec(currentBranchName);
+  stdoutStrings.push(' ' + clc.green(currentBranchNameResult));
+
+  return stdoutStrings.join('\n');
 }

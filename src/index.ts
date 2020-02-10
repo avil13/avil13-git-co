@@ -6,7 +6,8 @@ const run = async () => {
 
   const { branch } = await ask('Select branch', branches);
 
-  await checkoutBranch(branch);
+  const stdout = await checkoutBranch(branch);
+  console.log(stdout);
 };
 
 try {
