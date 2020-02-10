@@ -6,13 +6,9 @@ const run = async () => {
 
   const { branch } = await ask('Select branch', branches);
 
-  let stdout = '';
+  await checkoutBranch(branch);
 
-  stdout = await checkoutBranch(branch);
-  console.log(stdout);
-
-  stdout = await getCurrentBranchName()
-  console.log(stdout);
+  await getCurrentBranchName()
 };
 
 try {

@@ -43,26 +43,24 @@ function onlyUnique(value, index, self) {
   return self.indexOf(value) === index;
 }
 
-export async function checkoutBranch(branchName: string): Promise<string> {
+export async function checkoutBranch(branchName: string){
   if (!branchName) {
     throw new Error('No branch...');
   }
 
-  const stdoutStrings: string[] = [];
   const checkoutCommand = `git checkout ${branchName}`;
 
-  stdoutStrings.push(' ' + clc.green('git checkout', branchName) + '\n');
+  console.log(' ' + clc.green('git checkout', branchName) + '\n');
 
   const checkoutCommandResult = await exec(checkoutCommand);
-  stdoutStrings.push(checkoutCommandResult);
-
-  return stdoutStrings.join('\n');
+  console.log(checkoutCommandResult);
 }
 
 
-export async function getCurrentBranchName(): Promise<string> {
+export async function getCurrentBranchName(){
   const currentBranchName = `git rev-parse --abbrev-ref HEAD`;
 
-  return await exec(currentBranchName);
+  const stdout = await exec(currentBranchName);
+  console.log(stdout);
 }
 
