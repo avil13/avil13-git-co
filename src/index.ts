@@ -1,4 +1,4 @@
-import { getBranches, checkoutBranch } from './commands';
+import { getBranches, checkoutBranch, getCurrentBranchName } from './commands';
 import { ask } from './ask';
 
 const run = async () => {
@@ -6,7 +6,12 @@ const run = async () => {
 
   const { branch } = await ask('Select branch', branches);
 
-  const stdout = await checkoutBranch(branch);
+  let stdout = '';
+
+  stdout = await checkoutBranch(branch);
+  console.log(stdout);
+
+  stdout = await getCurrentBranchName()
   console.log(stdout);
 };
 
