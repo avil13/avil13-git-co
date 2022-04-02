@@ -25,7 +25,16 @@ co -h
 ```
 
 ```sh
+# Showing merged branches
+co m
+```
+
+```sh
+# Showing not merged branches
+co un
+```
+
+```sh
 # Choosing a branch to delete
 co -D
 ```
-

@@ -1,10 +1,25 @@
 import { exec } from './exec';
 
+
+export enum BranchesType {
+  All,
+  Merged,
+  NotMerged,
+}
+
+const commandsForGetBranches = {
+  [BranchesType.All]: 'git branch --all',
+  [BranchesType.Merged]: 'git branch --all --merged',
+  [BranchesType.NotMerged]: 'git branch --all --no-merged',
+} as const;
+
 /**
  * get branch list
  */
-export function getBranches(): Promise<string[]> {
-  return exec('git branch --all')
+export function getBranches(type: BranchesType): Promise<string[]> {
+  const command = commandsForGetBranches[type];
+
+  return exec(command)
     .then(parseBranches)
     .then(branches => {
       if (branches.length) {

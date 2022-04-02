@@ -1,4 +1,4 @@
-
+import { clc } from '../color';
 
 const args = process.argv.slice(2);
 
@@ -6,6 +6,8 @@ export enum Commands {
   Unknown,
   Help,
   DeleteBranch,
+  ShowMerged,
+  ShowUnMerged,
 };
 
 export const getWishOfUser = (firstArg?: string): Commands => {
@@ -15,8 +17,14 @@ export const getWishOfUser = (firstArg?: string): Commands => {
     case ['help', '-h', '--h', '--help'].includes(arg):
       return Commands.Help;
 
-      case ['D', '-D', 'rm'].includes(arg):
+    case ['-D', 'rm'].includes(arg):
       return Commands.DeleteBranch;
+
+    case ['m', '-m', 'merged'].includes(arg):
+      return Commands.ShowMerged;
+
+    case ['un', '--no-merged'].includes(arg):
+      return Commands.ShowUnMerged;
 
     default:
       return Commands.Unknown;
@@ -33,7 +41,13 @@ OPTIONS:
   help, -h, --h, --help
     Showing this message
 
-  D, D', 'rm
+  m, -m, merged
+    Showing merged branches
+
+  un, -un, --no-merged
+    Showing not merged branches
+
+  -D, rm
     Delete the selected branch
 `;
 }
