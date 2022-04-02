@@ -15,8 +15,7 @@
     "outDir": "dist",
     "types": [
       "node",
-      "inquirer",
-      "vitest/importMeta"
+      "inquirer"
     ],
     "paths": {
       "@/*": [
