@@ -1,4 +1,4 @@
-module.exports = {
+export const clc = {
   _red: '\x1b[31m',
   _green: '\x1b[32m',
   _yellow: '\x1b[33m',
@@ -27,7 +27,7 @@ module.exports = {
       ? this.green.apply(this, strList)
       : this.red.apply(this, strList);
   },
-  greenOrRedBg(isVal, ...strList) {
+  greenOrRedBg(isVal, ...strList: any) {
     return isVal === true
       ? this.greenBg.apply(this, strList)
       : this.redBg.apply(this, strList);
