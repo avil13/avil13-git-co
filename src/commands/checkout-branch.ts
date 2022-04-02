@@ -2,7 +2,7 @@ import { exec } from './exec';
 import { clc } from '../color';
 
 //
-export async function checkoutBranch(branchName: string){
+export async function checkoutBranch(branchName: string) {
   if (!branchName) {
     throw new Error('No branch...');
   }

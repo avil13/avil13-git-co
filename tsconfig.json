@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES2020",
     "module": "CommonJS",
     "strict": true,
     "declaration": true,
@@ -8,13 +8,15 @@
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": false,
+    "allowSyntheticDefaultImports": true,
     "sourceMap": false,
     "noImplicitAny": false,
     "baseUrl": ".",
     "outDir": "dist",
     "types": [
-      "node"
+      "node",
+      "inquirer",
+      "vitest/importMeta"
     ],
     "paths": {
       "@/*": [

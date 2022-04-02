@@ -1,4 +1,4 @@
-const inquirer = require('inquirer');
+import inquirer from 'inquirer';
 
 inquirer.registerPrompt(
   'autocomplete',
@@ -13,6 +13,7 @@ const specSymbols = {
 
 export const ask = async (message: string, choices: string[]) => {
   const prompt = inquirer.prompt({
+    //@ts-ignore
     type: 'autocomplete',
     name: 'branch',
     message,
