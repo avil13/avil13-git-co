@@ -18,7 +18,7 @@ export const ask = async (message: string, choices: string[]) => {
     name: 'branch',
     message,
     source(answersSoFar, input = '') {
-      const list = choices.filter(str => str.indexOf(input) > -1);
+      const list = choices.filter(choiceItem => checkItem(choiceItem, input));
 
       return Promise.resolve(list);
     }
@@ -26,3 +26,14 @@ export const ask = async (message: string, choices: string[]) => {
 
   return prompt;
 };
+
+//
+
+export function checkItem(item: string, filterString: string): boolean {
+  const reg = new RegExp(
+    filterString.split('').map(s => s.trim()).filter(Boolean).join('.*').replace('.*.*', '.*'),
+    'gi',
+  );
+
+  return reg.test(item);
+}
