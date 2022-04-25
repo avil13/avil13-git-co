@@ -18,7 +18,11 @@ export const ask = async (message: string, choices: string[]) => {
     name: 'branch',
     message,
     source(answersSoFar, input = '') {
-      const list = choices.filter(choiceItem => checkItem(choiceItem, input));
+      let list = choices.filter(choiceItem => checkItem(choiceItem, input));
+
+      list = list.sort((a, b) => {
+        return sortOrder(input, a, b);
+      });
 
       return Promise.resolve(list);
     }
@@ -28,12 +32,24 @@ export const ask = async (message: string, choices: string[]) => {
 };
 
 //
-
 export function checkItem(item: string, filterString: string): boolean {
-  const reg = new RegExp(
+  const reg = getRegExp(filterString);
+
+  return reg.test(item);
+}
+
+function sortOrder(searchString: string, name1: string, name2: string): number {
+  if (name2.includes(searchString)) {
+    return 0;
+  }
+
+  return 1;
+}
+
+
+function getRegExp(filterString: string) {
+  return new RegExp(
     filterString.split('').map(s => s.trim()).filter(Boolean).join('.*').replace('.*.*', '.*'),
     'gi',
   );
-
-  return reg.test(item);
 }
