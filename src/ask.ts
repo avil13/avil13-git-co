@@ -38,9 +38,9 @@ export function checkItem(item: string, filterString: string): boolean {
   return reg.test(item);
 }
 
-function sortOrder(searchString: string, name1: string, name2: string): number {
+function sortOrder(searchString: string, name1: string, name2: string): -1 | 1 {
   if (name2.indexOf(searchString) < name1.indexOf(searchString)) {
-    return 0;
+    return -1;
   }
 
   return 1;
