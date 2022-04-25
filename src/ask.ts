@@ -39,11 +39,7 @@ export function checkItem(item: string, filterString: string): boolean {
 }
 
 function sortOrder(searchString: string, name1: string, name2: string): number {
-  if (name1.indexOf(searchString) < name2.indexOf(searchString)) {
-    return 1;
-  }
-
-  if (name2.includes(searchString)) {
+  if (name2.indexOf(searchString) < name1.indexOf(searchString)) {
     return 0;
   }
 
