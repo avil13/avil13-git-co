@@ -38,12 +38,19 @@ export function checkItem(item: string, filterString: string): boolean {
   return reg.test(item);
 }
 
-function sortOrder(searchString: string, name1: string, name2: string): -1 | 1 {
-  if (name2.indexOf(searchString) < name1.indexOf(searchString)) {
+export function sortOrder(searchString: string, name1: string, name2: string): -1 | 1 {
+  if (!name1.includes(searchString)) {
+    return 1;
+  }
+  if (!name2.includes(searchString)) {
     return -1;
   }
 
-  return 1;
+  if ((name2.indexOf(searchString) < name1.indexOf(searchString))) {
+    return 1;
+  }
+
+  return -1;
 }
 
 
