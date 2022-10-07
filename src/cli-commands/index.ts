@@ -1,5 +1,4 @@
 import { clc } from '../color';
-import { version } from '../../package.json';
 
 const args = process.argv.slice(2);
 
@@ -41,7 +40,6 @@ export const getHelp = (): string => {
   return `
 DESCRIPTION:
   A console program for quickly switching between branches
-VERSION: ${version}
 
 OPTIONS:
   help, -h, --h, --help
