@@ -3,11 +3,12 @@ import { clc } from '../color';
 const args = process.argv.slice(2);
 
 export enum Commands {
-  Unknown,
-  Help,
-  DeleteBranch,
-  ShowMerged,
-  ShowUnMerged,
+  Unknown = 0,
+  Help = 1,
+  DeleteBranch = 2,
+  MergeBranch = 4,
+  ShowMerged = 8,
+  ShowUnMerged = 16,
 };
 
 export const getWishOfUser = (firstArg?: string): Commands => {
