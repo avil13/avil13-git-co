@@ -2,6 +2,7 @@ import { ask } from './ask';
 import { Commands, getHelp, getWishOfUser } from './cli-commands';
 import { BranchesType, checkoutBranch, getBranches, getCurrentBranchName } from './commands';
 import { deleteBranch } from './commands/delete-barnch';
+import { mergeBranch } from './commands/merge-branch';
 
 const run = async () => {
   const userWish = getWishOfUser();
@@ -25,6 +26,11 @@ const run = async () => {
 
   if (Commands.DeleteBranch === userWish) {
     deleteBranch(branch);
+    return;
+  }
+
+  if (Commands.MergeBranch === userWish) {
+    mergeBranch(branch);
     return;
   }
 
