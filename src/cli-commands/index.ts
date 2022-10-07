@@ -18,13 +18,16 @@ export const getWishOfUser = (firstArg?: string): Commands => {
     case ['help', '-h', '--h', '--help'].includes(arg):
       return Commands.Help;
 
+    case ['-M', 'merge'].includes(arg):
+      return Commands.MergeBranch;
+
     case ['-D', 'rm'].includes(arg):
       return Commands.DeleteBranch;
 
-    case ['m', '-m', 'merged'].includes(arg):
+    case ['-sm', '--show-merged'].includes(arg):
       return Commands.ShowMerged;
 
-    case ['un', '--no-merged'].includes(arg):
+    case ['-un', '--no-merged'].includes(arg):
       return Commands.ShowUnMerged;
 
     default:
@@ -42,10 +45,13 @@ OPTIONS:
   help, -h, --h, --help
     Showing this message
 
-  m, -m, merged
+  -M, merge
+    Merge branch
+
+  -sm, --show-merged
     Showing merged branches
 
-  un, -un, --no-merged
+  -un, --no-merged
     Showing not merged branches
 
   -D, rm
