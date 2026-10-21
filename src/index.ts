@@ -1,5 +1,5 @@
 import { ask, askBranches } from './ask';
-import { Commands, getHelp, parseArgs } from './cli-commands';
+import { Commands, getHelp, getVersion, parseArgs } from './cli-commands';
 import { BranchesType, checkoutBranch, getBranches, getCurrentBranchName } from './commands';
 import { deleteBranches } from './commands/delete-barnch';
 import { mergeBranch } from './commands/merge-branch';
@@ -9,6 +9,10 @@ import { finishTerminal, installInterruptHandler, print, startTerminal } from '.
 
 export const run = async () => {
   const { command, filter } = parseArgs();
+  if (command === Commands.Version) {
+    console.log(getVersion());
+    return;
+  }
   if (command === Commands.Help) {
     console.log(getHelp());
     return;

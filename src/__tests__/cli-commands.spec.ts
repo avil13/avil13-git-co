@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Commands, parseArgs } from '../cli-commands';
+import { Commands, getHelp, getVersion, parseArgs } from '../cli-commands';
 
 describe('arguments', () => {
   it('defaults to checkout', () => {
@@ -28,6 +28,14 @@ describe('arguments', () => {
   });
   it('rejects a filter for sync instead of silently ignoring it', () => {
     expect(() => parseArgs(['-p', '-', '1234'])).toThrow('does not accept a filter');
+  });
+  it.each(['--version', '-v'])('accepts version alias %s', alias => {
+    expect(parseArgs([alias])).toEqual({ command: Commands.Version, filter: '' });
+  });
+  it('reads the current version from package.json and includes it in help', () => {
+    expect(getVersion()).toBe(require('../../package.json').version);
+    expect(getHelp()).toContain(`co ${getVersion()}`);
+    expect(getHelp()).toContain('co --version, -v');
   });
   it('reports unknown options', () => {
     expect(() => parseArgs(['--typo'])).toThrow('Unknown option');

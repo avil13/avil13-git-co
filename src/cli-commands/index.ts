@@ -7,10 +7,12 @@ export enum Commands {
   ShowUnMerged = 16,
   Sync = 32,
   Stash = 64,
+  Version = 128,
 }
 
 export const getWishOfUser = (firstArg = process.argv[2]): Commands => {
   if (['help', '-h', '--h', '--help'].includes(firstArg)) return Commands.Help;
+  if (['--version', '-v'].includes(firstArg)) return Commands.Version;
   if (['-M', 'merge'].includes(firstArg)) return Commands.MergeBranch;
   if (['-D', 'rm'].includes(firstArg)) return Commands.DeleteBranch;
   if (firstArg === '-p') return Commands.Sync;
@@ -34,7 +36,11 @@ export function parseArgs(args = process.argv.slice(2)) {
   return { command, filter: rest.join(' ') };
 }
 
+export const getVersion = (): string => require('../../package.json').version;
+
 export const getHelp = (): string => `
+co ${getVersion()}
+
 DESCRIPTION:
   Quickly switch, merge, delete and synchronize Git branches, and manage stashes.
 
@@ -48,6 +54,7 @@ USAGE:
   co m, -sm, --show-merged   Show merged branches
   co un, -un, --no-merged    Show unmerged branches
   co help, -h, --h, --help   Show this message
+  co --version, -v          Show the current version
 
   Ctrl+C cancels and restores the previous terminal screen.
 `;
