@@ -55,6 +55,4 @@ USAGE:
   co un, -un, --no-merged    Show unmerged branches
   co help, -h, --h, --help   Show this message
   co --version, -v          Show the current version
-
-  Ctrl+C cancels and restores the previous terminal screen.
 `;

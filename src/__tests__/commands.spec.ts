@@ -6,6 +6,7 @@ import { join } from 'path';
 import inquirer from 'inquirer';
 import { exec } from '../commands/exec';
 import { BranchesType, getBranches } from '../commands/get-branches';
+import { getBranchLabels } from '../commands/get-branch-labels';
 import { checkoutBranch } from '../commands/checkout-branch';
 import { deleteBranches } from '../commands/delete-barnch';
 import { mergeBranch } from '../commands/merge-branch';
@@ -57,6 +58,24 @@ describe('Git commands', () => {
     expect(await getBranches(BranchesType.All)).toEqual([
       'main', 'origin/local', 'origin/main', 'upstream/main',
     ]);
+  });
+
+  it('labels branches with their tip commit date and merged status relative to HEAD', async () => {
+    git('checkout', '-q', '-b', 'feature');
+    git('commit', '-q', '--allow-empty', '-m', 'feature work');
+    git('checkout', '-q', 'main');
+    git('update-ref', 'refs/remotes/origin/feature', 'feature');
+    git('branch', 'old');
+    const branches = ['main', 'feature', 'old', 'origin/feature'];
+    const labels = await getBranchLabels(branches);
+    const date = git('log', '-1', '--format=%cs', 'feature');
+    expect(labels.get('feature')).toContain(`${date}  not merged`);
+    expect(labels.get('origin/feature')).toContain(`${date}  not merged`);
+    expect(labels.get('main')).toMatch(/\d{4}-\d{2}-\d{2}  merged/);
+    expect(labels.get('old')).toMatch(/\d{4}-\d{2}-\d{2}  merged/);
+    expect(labels.get('main')!.indexOf(date)).toBe(labels.get('feature')!.indexOf(date));
+    git('merge', '-q', '--ff-only', 'feature');
+    expect((await getBranchLabels(branches)).get('feature')).not.toContain('not merged');
   });
 
   it('excludes remote refs from deletion candidates', async () => {

@@ -2,6 +2,7 @@ import { ask, askBranches } from './ask';
 import { Commands, getHelp, getVersion, parseArgs } from './cli-commands';
 import { BranchesType, checkoutBranch, getBranches, getCurrentBranchName } from './commands';
 import { deleteBranches } from './commands/delete-barnch';
+import { getBranchLabels } from './commands/get-branch-labels';
 import { mergeBranch } from './commands/merge-branch';
 import { syncBranches } from './commands/sync-branches';
 import { manageStashes } from './commands/stash';
@@ -40,12 +41,13 @@ export const run = async () => {
     if (!branches.length) throw new Error('No local branches available for deletion.');
   }
 
+  const labels = await getBranchLabels(branches);
   startTerminal();
   if (deleting) {
-    const selected = await askBranches('Select branches to delete (Space to select)', branches, filter);
+    const selected = await askBranches('Select branches to delete (Space to select)', branches, filter, labels);
     await deleteBranches(selected);
   } else {
-    const { branch } = await ask('Select branch', branches, filter);
+    const { branch } = await ask('Select branch', branches, filter, labels);
     if (command === Commands.MergeBranch) await mergeBranch(branch);
     else {
       await checkoutBranch(branch);

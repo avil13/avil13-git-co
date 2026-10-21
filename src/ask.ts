@@ -15,7 +15,7 @@ class FilteredAutocompletePrompt extends AutocompletePrompt {
 
 inquirer.registerPrompt('autocomplete', FilteredAutocompletePrompt as any);
 
-export const ask = async (message: string, choices: string[], initialFilter = '') => {
+export const ask = async (message: string, choices: string[], initialFilter = '', labels?: Map<string, string>) => {
   return prompt<{ branch: string }>({
     type: 'autocomplete',
     name: 'branch',
@@ -24,19 +24,20 @@ export const ask = async (message: string, choices: string[], initialFilter = ''
     source(_answers, input = initialFilter) {
       return Promise.resolve(choices
         .filter(choice => checkItem(choice, input))
-        .sort((a, b) => sortOrder(input, a, b)));
+        .sort((a, b) => sortOrder(input, a, b))
+        .map(value => ({ name: labels?.get(value) || value, value, short: value })));
     },
   } as any);
 };
 
-export async function askBranches(message: string, choices: string[], filter = ''): Promise<string[]> {
+export async function askBranches(message: string, choices: string[], filter = '', labels?: Map<string, string>): Promise<string[]> {
   const filtered = choices.filter(choice => checkItem(choice, filter));
   if (!filtered.length) throw new Error('No branches match the filter.');
   const { branches } = await prompt<{ branches: string[] }>({
     type: 'checkbox',
     name: 'branches',
     message,
-    choices: filtered,
+    choices: filtered.map(value => ({ name: labels?.get(value) || value, value, short: value })),
     validate: (selected: string[]) => selected.length > 0 || 'Select at least one branch.',
   });
   return branches;
