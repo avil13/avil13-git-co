@@ -49,11 +49,14 @@ describe('Git commands', () => {
     expect(git('branch', '--show-current')).toBe(branch);
   });
 
-  it('preserves local origin-prefixed branches and deduplicates origin remote refs', async () => {
+  it('preserves remote prefixes and distinguishes local and remote branches', async () => {
     git('branch', 'origin/local');
     git('update-ref', 'refs/remotes/origin/main', 'HEAD');
+    git('update-ref', 'refs/remotes/upstream/main', 'HEAD');
     git('symbolic-ref', 'refs/remotes/origin/HEAD', 'refs/remotes/origin/main');
-    expect(await getBranches(BranchesType.All)).toEqual(['main', 'origin/local']);
+    expect(await getBranches(BranchesType.All)).toEqual([
+      'main', 'origin/local', 'origin/main', 'upstream/main',
+    ]);
   });
 
   it('excludes remote refs from deletion candidates', async () => {
