@@ -19,6 +19,10 @@ describe('arguments', () => {
   it.each(['un', '-un', '--no-merged'])('accepts unmerged alias %s', alias => {
     expect(parseArgs([alias]).command).toBe(Commands.ShowUnMerged);
   });
+  it.each(['-s', '--stash'])('accepts stash alias %s and optional filter', alias => {
+    expect(parseArgs([alias])).toEqual({ command: Commands.Stash, filter: '' });
+    expect(parseArgs([alias, '-', 'work'])).toEqual({ command: Commands.Stash, filter: 'work' });
+  });
   it('accepts sync without a filter', () => {
     expect(parseArgs(['-p'])).toEqual({ command: Commands.Sync, filter: '' });
   });

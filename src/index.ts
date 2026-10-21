@@ -4,12 +4,19 @@ import { BranchesType, checkoutBranch, getBranches, getCurrentBranchName } from 
 import { deleteBranches } from './commands/delete-barnch';
 import { mergeBranch } from './commands/merge-branch';
 import { syncBranches } from './commands/sync-branches';
+import { manageStashes } from './commands/stash';
 import { finishTerminal, installInterruptHandler, print, startTerminal } from './terminal';
 
 export const run = async () => {
   const { command, filter } = parseArgs();
   if (command === Commands.Help) {
     console.log(getHelp());
+    return;
+  }
+
+  if (command === Commands.Stash) {
+    startTerminal();
+    await manageStashes(filter);
     return;
   }
 

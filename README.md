@@ -1,6 +1,6 @@
 # avil13/co
 
-Interactive Git branch checkout, merge, deletion and synchronization.
+Interactive Git branch checkout, merge, deletion, synchronization and stash management.
 
 ![demo](assets/cli-demo.gif)
 
@@ -20,6 +20,7 @@ co un               # Show unmerged branches (also: -un, --no-merged)
 co -M               # Merge a selected branch (also: merge)
 co -D               # Delete multiple local branches (also: rm)
 co -p               # Fetch and safely sync all local branches (like hub sync)
+co -s               # List and manage stashes (also: --stash)
 co -h               # Show help
 ```
 
@@ -41,6 +42,22 @@ After a successful, confirmed merge, `co` offers to delete the source branch
 with **Yes** as the default (`[Y/n]`). This uses safe deletion (`git branch -d`),
 not forced deletion. Remote-only branches are not offered for deletion.
 A failed merge never triggers the deletion question.
+
+### Stash
+
+`co -s` or `co --stash` lists stash entries, newest first, with their dates and
+messages. Select an entry to see its creation date, author, commit hash and
+change statistics (including untracked files saved in the stash).
+
+Choose **Apply** to restore changes and keep the stash, **Pop** to restore and
+remove it on success, or **Delete** to remove it without applying. Deletion asks
+for confirmation `[n/Y]`: Enter confirms, `n` cancels. A failed pop keeps the
+stash, including when Git reports conflicts. Git errors end the command with
+exit code 1; resolve any conflicts before trying again.
+
+Use **Back to stash list** to select another entry, or **Exit** to leave without
+changes. The list refreshes after deletion. Optional filtering is supported:
+`co -s - search text` matches the reference, date or message.
 
 ### Synchronize branches
 
