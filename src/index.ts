@@ -3,12 +3,19 @@ import { Commands, getHelp, parseArgs } from './cli-commands';
 import { BranchesType, checkoutBranch, getBranches, getCurrentBranchName } from './commands';
 import { deleteBranches } from './commands/delete-barnch';
 import { mergeBranch } from './commands/merge-branch';
+import { syncBranches } from './commands/sync-branches';
 import { finishTerminal, installInterruptHandler, print, startTerminal } from './terminal';
 
 export const run = async () => {
   const { command, filter } = parseArgs();
   if (command === Commands.Help) {
     console.log(getHelp());
+    return;
+  }
+
+  if (command === Commands.Sync) {
+    startTerminal();
+    await syncBranches();
     return;
   }
 

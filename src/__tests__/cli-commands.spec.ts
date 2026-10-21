@@ -19,6 +19,12 @@ describe('arguments', () => {
   it.each(['un', '-un', '--no-merged'])('accepts unmerged alias %s', alias => {
     expect(parseArgs([alias]).command).toBe(Commands.ShowUnMerged);
   });
+  it('accepts sync without a filter', () => {
+    expect(parseArgs(['-p'])).toEqual({ command: Commands.Sync, filter: '' });
+  });
+  it('rejects a filter for sync instead of silently ignoring it', () => {
+    expect(() => parseArgs(['-p', '-', '1234'])).toThrow('does not accept a filter');
+  });
   it('reports unknown options', () => {
     expect(() => parseArgs(['--typo'])).toThrow('Unknown option');
   });

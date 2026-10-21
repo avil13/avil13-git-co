@@ -1,6 +1,6 @@
 # avil13/co
 
-Interactive Git branch checkout, merge and deletion.
+Interactive Git branch checkout, merge, deletion and synchronization.
 
 ![demo](assets/cli-demo.gif)
 
@@ -19,6 +19,7 @@ co m                # Show merged branches (also: -sm, --show-merged)
 co un               # Show unmerged branches (also: -un, --no-merged)
 co -M               # Merge a selected branch (also: merge)
 co -D               # Delete multiple local branches (also: rm)
+co -p               # Fetch and safely sync all local branches (like hub sync)
 co -h               # Show help
 ```
 
@@ -40,6 +41,26 @@ After a successful, confirmed merge, `co` offers to delete the source branch
 with **Yes** as the default (`[Y/n]`). This uses safe deletion (`git branch -d`),
 not forced deletion. Remote-only branches are not offered for deletion.
 A failed merge never triggers the deletion question.
+
+### Synchronize branches
+
+`co -p` works like `hub sync`, without requiring `hub`:
+
+- Fetches all remotes with `--prune`.
+- Fast-forwards local branches to their configured upstreams, including branches
+  that are not currently checked out. It does not create merge commits or rebase.
+- Without an upstream, uses the same-named branch on `origin`, or a unique match
+  on another remote. Ambiguous matches are skipped; tracking configuration is not changed.
+- Warns about unpushed commits or diverged history and leaves those branches unchanged.
+- Safely deletes branches whose remote upstream disappeared only when they are
+  merged into the current `HEAD`. Unmerged and checked-out branches are kept.
+- Skips updating the current branch if the working tree is dirty, and never updates
+  branches checked out in other worktrees.
+
+This command synchronizes **all** local branches without a selection prompt and
+accepts no search filter. It never pushes, force-resets, or stashes changes.
+Network and Git failures are reported with exit code 1; skipped branches are
+reported without treating them as failures.
 
 ### Cancel and errors
 
