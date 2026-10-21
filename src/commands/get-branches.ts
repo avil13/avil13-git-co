@@ -1,50 +1,24 @@
 import { exec } from './exec';
 
-
 export enum BranchesType {
   All,
   Merged,
   NotMerged,
 }
 
-const commandsForGetBranches = {
-  [BranchesType.All]: 'git branch --all',
-  [BranchesType.Merged]: 'git branch --all --merged',
-  [BranchesType.NotMerged]: 'git branch --all --no-merged',
-} as const;
+/** Remote origin refs are also offered for checkout/merge; deletion is local only. */
+export async function getBranches(type: BranchesType, localOnly = false): Promise<string[]> {
+  const args = ['branch', '--format=%(refname)'];
+  if (!localOnly) args.push('--all');
+  if (type === BranchesType.Merged) args.push('--merged');
+  if (type === BranchesType.NotMerged) args.push('--no-merged');
 
-/**
- * get branch list
- */
-export function getBranches(type: BranchesType): Promise<string[]> {
-  const command = commandsForGetBranches[type];
-
-  return exec(command)
-    .then(parseBranches)
-    .then(branches => {
-      if (branches.length) {
-        return branches;
-      }
-      throw new Error('No branches found...');
-    });
-}
-
-function parseBranches(stdout) {
-  return stdout
-    .split('\n')
-    .filter(s => !/\s->\s/.test(s))
-    .map(cleanBranchName)
-    .filter(Boolean)
-    .filter(onlyUnique);
-}
-
-function cleanBranchName(name) {
-  return name
-    .replace(/^\*/, '')
-    .replace(/remotes\/origin\//, '')
-    .trim();
-}
-
-function onlyUnique(value, index, self) {
-  return self.indexOf(value) === index;
+  const stdout = await exec(args);
+  const branches = [...new Set(stdout.split('\n')
+    .map(name => name.trim())
+    .filter(name => name && !/^refs\/remotes\/.+\/HEAD$/.test(name))
+    .map(name => name.replace(/^refs\/heads\//, '')
+      .replace(/^refs\/remotes\/(?:origin\/)?/, '')))];
+  if (!branches.length) throw new Error('No branches found.');
+  return branches;
 }

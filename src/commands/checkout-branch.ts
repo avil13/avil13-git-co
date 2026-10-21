@@ -1,16 +1,8 @@
 import { exec } from './exec';
-import { clc } from '../color';
+import { print } from '../terminal';
 
-//
 export async function checkoutBranch(branchName: string) {
-  if (!branchName) {
-    throw new Error('No branch...');
-  }
-
-  const checkoutCommand = `git checkout ${branchName}`;
-
-  console.log(' ' + clc.green('git checkout', branchName) + '\n');
-
-  const checkoutCommandResult = await exec(checkoutCommand);
-  console.log(checkoutCommandResult);
+  if (!branchName) throw new Error('No branch selected.');
+  print('git checkout ' + branchName);
+  print(await exec(['checkout', branchName, '--']));
 }

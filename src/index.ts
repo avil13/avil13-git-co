@@ -1,42 +1,47 @@
-import { ask } from './ask';
-import { Commands, getHelp, getWishOfUser } from './cli-commands';
+import { ask, askBranches } from './ask';
+import { Commands, getHelp, parseArgs } from './cli-commands';
 import { BranchesType, checkoutBranch, getBranches, getCurrentBranchName } from './commands';
-import { deleteBranch } from './commands/delete-barnch';
+import { deleteBranches } from './commands/delete-barnch';
 import { mergeBranch } from './commands/merge-branch';
+import { finishTerminal, installInterruptHandler, print, startTerminal } from './terminal';
 
-const run = async () => {
-  const userWish = getWishOfUser();
-
-  if (Commands.Help === userWish) {
+export const run = async () => {
+  const { command, filter } = parseArgs();
+  if (command === Commands.Help) {
     console.log(getHelp());
     return;
   }
 
-  let branchType: BranchesType = BranchesType.All;
-
-  if (Commands.ShowMerged === userWish) {
-    branchType = BranchesType.Merged;
-  } else if (Commands.ShowUnMerged === userWish) {
-    branchType = BranchesType.NotMerged;
+  const branchType = command === Commands.ShowMerged ? BranchesType.Merged
+    : command === Commands.ShowUnMerged ? BranchesType.NotMerged : BranchesType.All;
+  const deleting = command === Commands.DeleteBranch;
+  let branches = await getBranches(branchType, deleting);
+  if (deleting) {
+    const currentBranch = await getCurrentBranchName();
+    branches = branches.filter(branch => branch !== currentBranch);
+    if (!branches.length) throw new Error('No local branches available for deletion.');
   }
 
-  const branches = await getBranches(branchType);
-
-  const { branch } = await ask('Select branch', branches);
-
-  if (Commands.DeleteBranch === userWish) {
-    deleteBranch(branch);
-    return;
+  startTerminal();
+  if (deleting) {
+    const selected = await askBranches('Select branches to delete (Space to select)', branches, filter);
+    await deleteBranches(selected);
+  } else {
+    const { branch } = await ask('Select branch', branches, filter);
+    if (command === Commands.MergeBranch) await mergeBranch(branch);
+    else {
+      await checkoutBranch(branch);
+      print(await getCurrentBranchName());
+    }
   }
-
-  if (Commands.MergeBranch === userWish) {
-    mergeBranch(branch);
-    return;
-  }
-
-  await checkoutBranch(branch);
-
-  await getCurrentBranchName()
 };
 
-run();
+const removeInterruptHandler = installInterruptHandler();
+run().catch(error => {
+  finishTerminal();
+  console.error('Error: ' + (error instanceof Error ? error.message : String(error)));
+  process.exitCode = 1;
+}).finally(() => {
+  finishTerminal();
+  removeInterruptHandler();
+});

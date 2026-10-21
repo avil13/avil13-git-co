@@ -1,7 +1,3 @@
-import { clc } from '../color';
-
-const args = process.argv.slice(2);
-
 export enum Commands {
   Unknown = 0,
   Help = 1,
@@ -9,52 +5,40 @@ export enum Commands {
   MergeBranch = 4,
   ShowMerged = 8,
   ShowUnMerged = 16,
+}
+
+export const getWishOfUser = (firstArg = process.argv[2]): Commands => {
+  if (['help', '-h', '--h', '--help'].includes(firstArg)) return Commands.Help;
+  if (['-M', 'merge'].includes(firstArg)) return Commands.MergeBranch;
+  if (['-D', 'rm'].includes(firstArg)) return Commands.DeleteBranch;
+  if (['m', '-sm', '--show-merged'].includes(firstArg)) return Commands.ShowMerged;
+  if (['un', '-un', '--no-merged'].includes(firstArg)) return Commands.ShowUnMerged;
+  return Commands.Unknown;
 };
 
-export const getWishOfUser = (firstArg?: string): Commands => {
-  const arg: string = firstArg || args[0];
-
-  switch (true) {
-    case ['help', '-h', '--h', '--help'].includes(arg):
-      return Commands.Help;
-
-    case ['-M', 'merge'].includes(arg):
-      return Commands.MergeBranch;
-
-    case ['-D', 'rm'].includes(arg):
-      return Commands.DeleteBranch;
-
-    case ['-sm', '--show-merged'].includes(arg):
-      return Commands.ShowMerged;
-
-    case ['-un', '--no-merged'].includes(arg):
-      return Commands.ShowUnMerged;
-
-    default:
-      return Commands.Unknown;
+export function parseArgs(args = process.argv.slice(2)) {
+  const command = getWishOfUser(args[0] || '');
+  if (!args.length) return { command, filter: '' };
+  if (command === Commands.Unknown && args[0] !== '-') {
+    throw new Error('Unknown option: ' + args[0] + '. Use co --help.');
   }
+  const rest = args.slice(1);
+  if (rest[0] === '-') rest.shift();
+  return { command, filter: rest.join(' ') };
 }
 
-
-export const getHelp = (): string => {
-  return `
+export const getHelp = (): string => `
 DESCRIPTION:
-  A console program for quickly switching between branches
+  Quickly switch, merge and delete Git branches.
 
-OPTIONS:
-  help, -h, --h, --help
-    Showing this message
+USAGE:
+  co                         Select a branch to check out
+  co - 1234                  Start with an editable search filter
+  co -M [- filter]           Merge, then offer to delete the source branch [Y/n]
+  co -D [- filter]           Delete multiple local branches (Space to select)
+  co m, -sm, --show-merged   Show merged branches
+  co un, -un, --no-merged    Show unmerged branches
+  co help, -h, --h, --help   Show this message
 
-  -M, merge
-    Merge branch
-
-  -sm, --show-merged
-    Showing merged branches
-
-  -un, --no-merged
-    Showing not merged branches
-
-  -D, rm
-    Delete the selected branch
+  Ctrl+C cancels and restores the previous terminal screen.
 `;
-}
