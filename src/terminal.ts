@@ -3,7 +3,9 @@ let active = false;
 let messages: string[] = [];
 
 export function startTerminal() {
-  active = Boolean(process.stdout.isTTY && process.stdin.isTTY);
+  // Temporarily disable the alternate screen; keep ordinary terminal output.
+  // active = Boolean(process.stdout.isTTY && process.stdin.isTTY);
+  active = false;
   messages = [];
   if (active) process.stdout.write('\x1b[?1049h');
 }
