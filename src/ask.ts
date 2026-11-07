@@ -57,6 +57,10 @@ export function checkItem(item: string, filterString: string): boolean {
 }
 
 export function sortOrder(searchString: string, name1: string, name2: string): number {
+  const firstOrigin = name1.startsWith('origin/');
+  const secondOrigin = name2.startsWith('origin/');
+  if (firstOrigin !== secondOrigin) return firstOrigin ? 1 : -1;
+
   const search = searchString.toLowerCase();
   const first = name1.toLowerCase().indexOf(search);
   const second = name2.toLowerCase().indexOf(search);

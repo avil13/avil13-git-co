@@ -16,6 +16,15 @@ it('returns zero for equivalent ranks', () => {
   expect(sortOrder('', 'first', 'second')).toBe(0);
 });
 
+it.each(['', 'task'])('places origin branches last when searching for "%s"', search => {
+  const branches = ['origin/task', 'feature/task', 'origin/feature/task', 'task', 'original/task'];
+  const expected = search
+    ? ['task', 'feature/task', 'original/task', 'origin/task', 'origin/feature/task']
+    : ['feature/task', 'task', 'original/task', 'origin/task', 'origin/feature/task'];
+
+  expect(branches.sort((a, b) => sortOrder(search, a, b))).toEqual(expected);
+});
+
 it('ranks contiguous matches by position and keeps other choices stable', () => {
   const list = [
     'chore/EDODEV-10449-act-master',
