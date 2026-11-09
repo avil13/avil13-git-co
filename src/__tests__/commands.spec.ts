@@ -50,6 +50,34 @@ describe('Git commands', () => {
     expect(git('branch', '--show-current')).toBe(branch);
   });
 
+  it.each(['origin', 'upstream'])('creates a local tracking branch when selecting %s', async remote => {
+    git('remote', 'add', remote, '.');
+    git('update-ref', `refs/remotes/${remote}/feature/task`, 'HEAD');
+    await checkoutBranch(`${remote}/feature/task`);
+    expect(git('branch', '--show-current')).toBe('feature/task');
+    expect(git('rev-parse', '--abbrev-ref', '@{upstream}')).toBe(`${remote}/feature/task`);
+  });
+
+  it('uses the existing local branch without resetting its commits', async () => {
+    git('remote', 'add', 'origin', '.');
+    git('update-ref', 'refs/remotes/origin/feature', 'HEAD');
+    git('checkout', '-q', '-b', 'feature');
+    git('commit', '-q', '--allow-empty', '-m', 'local work');
+    const tip = git('rev-parse', 'HEAD');
+    git('checkout', '-q', 'main');
+    await checkoutBranch('origin/feature');
+    expect(git('branch', '--show-current')).toBe('feature');
+    expect(git('rev-parse', 'HEAD')).toBe(tip);
+  });
+
+  it('preserves local branch names that start with a remote name', async () => {
+    git('remote', 'add', 'origin', '.');
+    git('branch', 'origin/local');
+    git('update-ref', 'refs/remotes/origin/local', 'HEAD');
+    await checkoutBranch('origin/local');
+    expect(git('branch', '--show-current')).toBe('origin/local');
+  });
+
   it('preserves remote prefixes and distinguishes local and remote branches', async () => {
     git('branch', 'origin/local');
     git('update-ref', 'refs/remotes/origin/main', 'HEAD');
