@@ -1,17 +1,17 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "CommonJS",
+    "module": "Node16",
     "strict": true,
     "declaration": true,
     "importHelpers": false,
-    "moduleResolution": "node",
+    "moduleResolution": "Node16",
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": false,
     "noImplicitAny": false,
-    "baseUrl": ".",
+    "rootDir": "src",
     "outDir": "dist",
     "types": [
       "node",
@@ -19,7 +19,7 @@
     ],
     "paths": {
       "@/*": [
-        "src/*"
+        "./src/*"
       ]
     },
     "lib": [
